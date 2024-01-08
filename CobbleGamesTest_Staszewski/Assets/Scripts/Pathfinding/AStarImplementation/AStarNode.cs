@@ -7,6 +7,9 @@ namespace Test.Pathfinding.AStar
 {
     public class AStarNode : IHeapItem<int>
     {
+        private const string COORD_TO_STRING_FORMAT = "({0},{1})";
+        private const string TOSTRING_FORMAT = "({0},{1}), Parent: {2}, F= {3}, G= {4}, Total={5}";
+
         public int Priority => _distanceToTargetEstimated + _distanceTraversed;
 
         private int _distanceTraversed;
@@ -14,17 +17,11 @@ namespace Test.Pathfinding.AStar
 
         private AStarNode _parent;
 
-        //private int _xCoord;
-        //private int _yCoord;
-
         private Tuple<int, int> _coords;
 
 
         public AStarNode(int xCoord, int yCoord, int distanceTraversed, int distanceToTarget, AStarNode parent = null)
         {
-            //_xCoord = xCoord;
-            //_yCoord = yCoord;
-
             _coords = new Tuple<int, int>(xCoord, yCoord);
 
             _distanceTraversed = distanceTraversed;
@@ -72,16 +69,16 @@ namespace Test.Pathfinding.AStar
                     this,
                     item
                 );
-        }
+        }        
 
         public override string ToString()
         {
             return
                 string.Format( 
-                        "({0},{1}), Parent: {2}, F= {3}, G= {4}, Total={5}", 
+                        TOSTRING_FORMAT, 
                         X,
                         Y,
-                        (_parent != null? string.Format("({0},{1})", _parent.X, _parent.Y) : string.Empty ),
+                        (_parent != null? string.Format(COORD_TO_STRING_FORMAT, _parent.X, _parent.Y) : string.Empty ),
                         _distanceTraversed,
                         _distanceToTargetEstimated,
                         (_distanceToTargetEstimated + _distanceTraversed).ToString()

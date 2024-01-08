@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Test.Pathfinding.AStar
 {
-    public class MaxHeap : Heap<IHeapItem<int>>
+    public class MaxHeap<T> : Heap<T> where T : IHeapItem<int>
     {
-        protected override bool HeapCriterium(IHeapItem<int> encountered, IHeapItem<int> candidate)
+        protected override bool HeapCriterium(T encountered, T candidate)
         {
             return
                 encountered.Priority >= candidate.Priority;
