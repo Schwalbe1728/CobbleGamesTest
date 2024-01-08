@@ -73,15 +73,20 @@ namespace Test.Map.Abstraction
 
         public Vector2Int[] GetTraversibleNeighboursOnGrid(Vector2Int gridPoint)
         {
+            return GetTraversibleNeighboursOnGrid(gridPoint.x, gridPoint.y);
+        }
+
+        public Vector2Int[] GetTraversibleNeighboursOnGrid(int x, int y)
+        {
             List<Vector2Int> result = new List<Vector2Int>();
 
             for(int i = 0; i < _gridNeighboursX.Length; i++)
             {
-                if(IsInBoundsGrid( gridPoint.x + _gridNeighboursX[i], gridPoint.y + _gridNeighboursY[i]))
+                if(IsInBoundsGrid( x + _gridNeighboursX[i], y + _gridNeighboursY[i]))
                 {
                     result.Add
                         (
-                            new Vector2Int(gridPoint.x + _gridNeighboursX[i], gridPoint.y + _gridNeighboursY[i])
+                            new Vector2Int(x + _gridNeighboursX[i], y + _gridNeighboursY[i])
                         );
                 }
             }

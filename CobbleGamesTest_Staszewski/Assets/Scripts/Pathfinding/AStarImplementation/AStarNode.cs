@@ -32,19 +32,24 @@ namespace Test.Pathfinding.AStar
 
         public int X { get { return _coords.x ; } }
         public int Y { get { return _coords.y; } }
+
+        public int DistanceTraversed { get { return _distanceTraversed; } }
+        public int DistanceToTargetEstimated { get { return _distanceToTargetEstimated; } }
         
-        public AStarNode[] GetCalculatedPathToNode()
+        public Vector2Int[] GetCalculatedPathToNode()
         {
             //  Technically, this should be done better, as in - not handled by this class. Still better than public access to parent node.
 
-            List<AStarNode> result = new List<AStarNode>();
-            result.Add(this);
+            List<Vector2Int> result = new List<Vector2Int>();
+            result.Add(this._coords);
 
             bool notFinished = true;
+            AStarNode current = this;
 
             while(notFinished)
             {
-                notFinished = AppendPath(ref result);
+                notFinished = current.AppendPath(ref result);
+                current = current._parent;
             }
 
             return result.ToArray();
@@ -55,6 +60,42 @@ namespace Test.Pathfinding.AStar
             return
                 nodeA.X.Equals(nodeB.X) &&
                 nodeA.Y.Equals(nodeB.Y);
+        }
+
+        public static void Distance(AStarNode nodeA, AStarNode nodeB, HeuristicModule heuristic, out int traversalCostNeighbours, out int traversalCostEstimated)
+        {
+            int distance = 0;
+
+            heuristic.CalculateDistance(nodeA._coords, nodeB._coords, out distance, out bool areNeighbours);
+
+            if(areNeighbours)
+            {
+                traversalCostNeighbours = distance;
+                traversalCostEstimated = 0;
+            }
+            else
+            {
+                traversalCostNeighbours = 0;
+                traversalCostEstimated = distance;
+            }
+        }
+
+        public static void Distance(AStarNode nodeA, Vector2Int pointB, HeuristicModule heuristic, out int traversalCostNeighbours, out int traversalCostEstimated)
+        {
+            int distance = 0;
+
+            heuristic.CalculateDistance(nodeA._coords, pointB, out distance, out bool areNeighbours);
+
+            if (areNeighbours)
+            {
+                traversalCostNeighbours = distance;
+                traversalCostEstimated = 0;
+            }
+            else
+            {
+                traversalCostNeighbours = 0;
+                traversalCostEstimated = distance;
+            }
         }
 
         public override bool Equals(object obj)
@@ -92,7 +133,7 @@ namespace Test.Pathfinding.AStar
                 _coords.GetHashCode();
         }
 
-        private bool AppendPath(ref List<AStarNode> resultPath)
+        private bool AppendPath(ref List<Vector2Int> resultPath)
         {
             if(resultPath == null)
             {
@@ -103,7 +144,7 @@ namespace Test.Pathfinding.AStar
 
             if(result)
             {
-                resultPath.Insert(0, _parent);
+                resultPath.Insert(0, _parent._coords);
             }
 
             return result;
