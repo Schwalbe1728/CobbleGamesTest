@@ -324,8 +324,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridConfig: {fileID: 11400000, guid: 2ede8e2d737449748ad9f68163399e34, type: 2}
   heuristicConfig: {fileID: 11400000, guid: b40aab8c9f1027f4db26f19f26d9a679, type: 2}
-  _startCoord: {x: 0, y: 0}
-  _targetCoord: {x: 7, y: 8}
+  _startCoord: {x: 0, y: 1}
+  _targetCoord: {x: 8, y: 8}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

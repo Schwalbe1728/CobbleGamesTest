@@ -40,7 +40,10 @@ namespace Test.Pathfinding.AStar
 
             AStarNode current = null;
 
-            OPEN.Insert(start);
+            if (mapAbstract.GridCoordTraversible(start.X, start.Y))
+            {
+                OPEN.Insert(start);
+            }
 
             while(OPEN.Empty == false)
             {
@@ -56,7 +59,9 @@ namespace Test.Pathfinding.AStar
             }
 
             return
-                current.GetCalculatedPathToNode();
+                current != null ?
+                    current.GetCalculatedPathToNode() :
+                    null;
         }
 
         private void AppendWithNeighbours(AStarNode current, AStarNode target, ref MinHeap<AStarNode> OPEN, ref HashSet<AStarNode> CLOSED, HeuristicModule heuristicModule, MapAbstraction mapAbstract)
@@ -75,16 +80,20 @@ namespace Test.Pathfinding.AStar
                 {
                     AStarNode.Distance(current, neighbours[i], heuristicModule, out traversalCostNeighbours, out dummy);
                     //  NOTE: distanceEstimate returned above is always 0 - current and neighbours[i] are supposed to be neighbours, right?
-                    //  TODO: Check in Editor that throws exceptions if dummy ISN'T zero
+                    if(dummy != 0)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
                     AStarNode.Distance(target, neighbours[i], heuristicModule, out dummy, out distanceEstimate);
-                    //  NOTE: Same story as above, though this time traversalCostNeighbours is expected 0
+                                        
 
                     currentNeighbour =
                         new AStarNode(
                             neighbours[i].x,
                             neighbours[i].y,
                             current.DistanceTraversed + traversalCostNeighbours,
-                            distanceEstimate,
+                            Mathf.Max(distanceEstimate, dummy),                     //  CASE:   neighbour[i] of current node is also a neighbour of the target cell => dummy gets filled instead
                             current);
 
                     if(CLOSED.Contains(currentNeighbour) == false)

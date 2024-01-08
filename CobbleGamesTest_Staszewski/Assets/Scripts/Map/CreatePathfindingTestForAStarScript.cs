@@ -77,14 +77,17 @@ namespace Test.Map.Abstraction
 
             builder.AppendLine("Calculated path: ");
 
-            for(int i = 0; i < path.Length; i++)
+            if (path != null && path.Length > 0)
             {
-                builder.AppendLine(path[i].ToString());
+                for (int i = 0; i < path.Length; i++)
+                {
+                    builder.AppendLine(path[i].ToString());
+                }
             }
 
             builder.AppendLine();
 
-            if (path[path.Length - 1].Equals(_targetCoord))
+            if (path != null && path.Length > 0 && path[path.Length - 1].Equals(_targetCoord))
             {
                 builder.AppendLine("Target reached!");
             }
