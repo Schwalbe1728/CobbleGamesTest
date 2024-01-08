@@ -44,8 +44,8 @@ namespace Test.Pathfinding
         private bool AreSameCell(Vector2Int pointA, Vector2Int pointB)
         {
             return
-                pointA.x.Equals(pointB.y) &&
-                pointA.x.Equals(pointB.y);
+                pointA.x.Equals(pointB.x) &&
+                pointA.y.Equals(pointB.y);
         }
 
         private bool AreNeighbouringCells(Vector2Int pointA, Vector2Int pointB)
