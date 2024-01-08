@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Test.Map.Abstraction
 {
-    [CreateAssetMenu(fileName = "MapGridConfig", menuName = "Map Grid Configuration")]
+    [CreateAssetMenu(fileName = "MapGridConfig", menuName = "Scriptable Objects/Map Grid Configuration")]
     public class MapGridConfiguration : ScriptableObject
     {
         [SerializeField]

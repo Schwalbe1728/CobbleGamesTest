@@ -52,8 +52,6 @@ namespace Test.Pathfinding.AStar
         {
             if (_lookUpTable.ContainsKey(item))
             {
-                UnityEngine.Debug.LogFormat("UPDATE VALUE (new) {0}", item.ToString());
-
                 int oldItemIndex = _lookUpTable[item];
 
                 if (HeapCriterium(_heapArray[oldItemIndex], item) == false)
@@ -69,20 +67,6 @@ namespace Test.Pathfinding.AStar
             {
                 InsertItem(item);
             }
-
-            //InsertItem(item);       //  Temporary version that doesn't account at all for update needs
-
-            //  TODO:
-            //  if the path coordinate already exists in the heap, this means potential update of the priority
-            //  if the priority of the node is better, this requires update of the heap
-
-            //  observation: 
-            //  if the priority is better, this means that CRITERIUM( [old version] , [new version] ) is false
-            //  ergo - no need to rebuild the heap if update actually takes place in this case, all we need to do is UpHeap the replaced node
-
-            //  observation 2:
-            //  nevermind, that was fucking incorrect
-
         }
 
         public void CreateHeap(T[] replacementItemArray)
@@ -106,8 +90,6 @@ namespace Test.Pathfinding.AStar
             }
         }
 
-        private int LastItemIndex { get { return _heapCount + 1; } }    //  index 0 is guardian
-
         /// <summary>
         /// 
         /// </summary>
@@ -123,6 +105,22 @@ namespace Test.Pathfinding.AStar
                     _heapArray[encounteredIndex],
                     _heapArray[candidateIndex]
                     );
+        }
+
+        private void InsertItem(T item, bool upHeap = true)
+        {
+            if (_heapCount > _heapArray.Length - 2)
+            {
+                UpsizeArray();
+            }
+
+            _heapArray[++_heapCount] = item;
+            _lookUpTable.Add(item, _heapCount);
+
+            if (upHeap && _heapCount > 1)
+            {
+                UpHeap(_heapCount);
+            }
         }
 
         private void DownHeap(int rootIndex, int limitIndex)
@@ -167,29 +165,13 @@ namespace Test.Pathfinding.AStar
                 HeapCriterium(_heapArray[itemIndex / 2], item) == false )
             {
                 _lookUpTable[_heapArray[itemIndex / 2]] = itemIndex;
-                _heapArray[itemIndex] = _heapArray[itemIndex / 2];  //  pushing the items down on the path to the top
+                _heapArray[itemIndex] = _heapArray[itemIndex / 2];          //  pushing the items down on the path to the top
                 itemIndex /= 2;
             }
 
-            _heapArray[itemIndex] = item;   //  we've found where the item belongs priority wise
+            _heapArray[itemIndex] = item;                                   //  we've found where the item belongs priority wise
             _lookUpTable[item] = itemIndex;
-        }
-
-        private void InsertItem(T item, bool upHeap = true)
-        {
-            if(_heapCount > _heapArray.Length - 2)
-            {
-                UpsizeArray();
-            }
-
-            _heapArray[++_heapCount] = item;
-            _lookUpTable.Add(item, _heapCount);
-
-            if(upHeap && _heapCount > 1)
-            {
-                UpHeap(_heapCount);
-            }
-        }        
+        }              
 
         #region Heap Array Size
         private void UpsizeArray()

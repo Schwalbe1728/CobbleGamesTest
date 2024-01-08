@@ -9,7 +9,7 @@ namespace Test.Map.Abstraction
         private MapData _mapData;
         private MapGridConfiguration _gridConfiguration;
 
-        private bool[][] _gridTraversalData;
+        protected bool[][] _gridTraversalData;
 
         private Vector3 _minRealCoordinate = Vector3.zero;
         private Vector3 _maxRealCoordinate = Vector3.zero;
@@ -20,19 +20,26 @@ namespace Test.Map.Abstraction
         public void Initialize(MapData mapData, MapGridConfiguration gridConfig)
         {
             _mapData = mapData;
-            _gridConfiguration = gridConfig;                       
+            _gridConfiguration = gridConfig;
 
-            _minRealCoordinate =
-                new Vector3(
-                    x: _mapData.CenterCoord.x - _mapData.Width / 2,
-                    y: _mapData.CenterCoord.y,
-                    z: _mapData.CenterCoord.z - _mapData.Height / 2);
+            if (mapData != null)
+            {
+                _minRealCoordinate =
+                  new Vector3(
+                      x: _mapData.CenterCoord.x - _mapData.Width / 2,
+                      y: _mapData.CenterCoord.y,
+                      z: _mapData.CenterCoord.z - _mapData.Height / 2);
 
-            _maxRealCoordinate =
-                new Vector3(
-                    x: _mapData.CenterCoord.x + _mapData.Width / 2,
-                    y: _mapData.CenterCoord.y,
-                    z: _mapData.CenterCoord.z + _mapData.Height / 2);
+                _maxRealCoordinate =
+                    new Vector3(
+                        x: _mapData.CenterCoord.x + _mapData.Width / 2,
+                        y: _mapData.CenterCoord.y,
+                        z: _mapData.CenterCoord.z + _mapData.Height / 2);
+            }
+            else
+            {
+                Debug.LogWarning("MapAbstraction: MapData is null!");
+            }
 
             GenerateGridData(mapData, gridConfig);            
         }
@@ -67,21 +74,35 @@ namespace Test.Map.Abstraction
         public bool GridCoordTraversible(Vector2Int gridPoint)
         {
             return
-                IsInBoundsGrid(gridPoint.x, gridPoint.y) &&
-                _gridTraversalData[gridPoint.x][gridPoint.y];
+                GridCoordTraversible(gridPoint.x, gridPoint.y);
+        }
+
+        public bool GridCoordTraversible(int x, int y)
+        {
+            return
+                IsInBoundsGrid(x, y) &&
+                _gridTraversalData[x][y];
         }
 
         public Vector2Int[] GetTraversibleNeighboursOnGrid(Vector2Int gridPoint)
+        {
+            return GetTraversibleNeighboursOnGrid(gridPoint.x, gridPoint.y);
+        }
+
+        public Vector2Int[] GetTraversibleNeighboursOnGrid(int x, int y)
         {
             List<Vector2Int> result = new List<Vector2Int>();
 
             for(int i = 0; i < _gridNeighboursX.Length; i++)
             {
-                if(IsInBoundsGrid( gridPoint.x + _gridNeighboursX[i], gridPoint.y + _gridNeighboursY[i]))
+                if(
+                    GridCoordTraversible (x + _gridNeighboursX[i], y + _gridNeighboursY[i]) &&
+                    IsDiagonalObstructedByAdjacentNeighbours(x, y, x + _gridNeighboursX[i], y + _gridNeighboursY[i]) == false
+                    )
                 {
                     result.Add
                         (
-                            new Vector2Int(gridPoint.x + _gridNeighboursX[i], gridPoint.y + _gridNeighboursY[i])
+                            new Vector2Int(x + _gridNeighboursX[i], y + _gridNeighboursY[i])
                         );
                 }
             }
@@ -96,7 +117,7 @@ namespace Test.Map.Abstraction
             throw new System.NotImplementedException();
         }
 
-        private void GenerateGridData(MapData mapData, MapGridConfiguration gridConfig)
+        protected virtual void GenerateGridData(MapData mapData, MapGridConfiguration gridConfig)
         {
             _gridTraversalData = new bool[gridConfig.GridWidth][];
 
@@ -136,6 +157,34 @@ namespace Test.Map.Abstraction
             return
                 x >= 0 && x < _gridConfiguration.GridWidth &&
                 y >= 0 && y < _gridConfiguration.GridHeight;
+        }
+
+        /// <summary>
+        /// returns true if two cells are diagonal to each other and despite being traversible, their common adjacent neighbours obstruct the diagonal path
+        /// returns false if from and to not diagonal neighbours
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        private bool IsDiagonalObstructedByAdjacentNeighbours(Vector2Int from, Vector2Int to)
+        {
+            return 
+                IsDiagonalObstructedByAdjacentNeighbours(from.x, from.y, to.x, to.y);
+        }
+
+        private bool IsDiagonalObstructedByAdjacentNeighbours(int x0, int y0, int x1, int y1)
+        {
+            bool diagonal =
+                Mathf.Abs(x0 - x1) == 1 &&
+                Mathf.Abs(y0 - y1) == 1;
+
+            if (diagonal)
+            {
+                diagonal =
+                    (_gridTraversalData[x0][y1] && _gridTraversalData[x1][y0]) == false;
+            }
+
+            return diagonal;
         }
     }
 }
