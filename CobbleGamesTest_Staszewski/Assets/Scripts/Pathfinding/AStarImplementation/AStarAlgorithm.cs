@@ -7,14 +7,14 @@ namespace Test.Pathfinding.AStar
 {
     public class AStarAlgorithm
     {
-        public Vector2Int[] CalculatePath(Vector2Int start, Vector2Int target)
+        public Vector2Int[] CalculatePath(Vector2Int start, Vector2Int target, HeuristicModule heuristicModule)
         {
             throw new System.NotImplementedException();
 
             //  TODO: map abstract and heuristic classes required to be passed down. to private CalculatePath as well.
         }
 
-        private AStarNode[] CalculatePath(AStarNode start, AStarNode target)
+        private AStarNode[] CalculatePath(AStarNode start, AStarNode target, HeuristicModule heuristicModule)
         {            
             MinHeap<AStarNode> OPEN = new MinHeap<AStarNode>();
             HashSet<AStarNode> CLOSED = new HashSet<AStarNode>();
@@ -33,14 +33,14 @@ namespace Test.Pathfinding.AStar
                     break;
                 }
 
-                AppendWithNeighbours(current, ref OPEN, ref CLOSED);
+                AppendWithNeighbours(current, ref OPEN, ref CLOSED, heuristicModule);
             }
 
             return
                 current.GetCalculatedPathToNode();
         }
 
-        private void AppendWithNeighbours(AStarNode current, ref MinHeap<AStarNode> OPEN, ref HashSet<AStarNode> CLOSED)
+        private void AppendWithNeighbours(AStarNode current, ref MinHeap<AStarNode> OPEN, ref HashSet<AStarNode> CLOSED, HeuristicModule heuristicModule)
         {
             throw new System.NotImplementedException();
 
