@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b31e259fd9723f41af79fb94cd8afe0, type: 3}
   m_Name: HeuristicConfig
   m_EditorClassIdentifier: 
-  _adjacentCellCost: 10
-  _diagonalCellCost: 14
+  _adjacentCellCost: 100
+  _diagonalCellCost: 141
   _diagonalTraversalAllowed: 1
