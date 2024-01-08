@@ -1,11 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Test.Pathfinding.AStar
 {
-    public class AStarAlgorithm
+    public class AStarAlgorithm<T> where T: Tuple<int, int>
     {
+        public T[] CalculatePath(T start, T target)
+        {
+            throw new System.NotImplementedException();
+
+            //  TODO: map abstract and heuristic classes required to be passed down. to private CalculatePath as well.
+        }
+
         private AStarNode[] CalculatePath(AStarNode start, AStarNode target)
         {            
             MinHeap<AStarNode> OPEN = new MinHeap<AStarNode>();

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Test.Pathfinding.AStar
 {
-    public class AStarNode : IHeapItem<int>
+    public class AStarNode : IHeapItem<int>     //  .NET pre .NET 7 doesn't allow for generic limited to number, so I bit the bullet and decided T == int
     {
         private const string COORD_TO_STRING_FORMAT = "({0},{1})";
         private const string TOSTRING_FORMAT = "({0},{1}), Parent: {2}, F= {3}, G= {4}, Total={5}";
