@@ -17,12 +17,12 @@ namespace Test.Pathfinding.AStar
 
         private AStarNode _parent;
 
-        private Tuple<int, int> _coords;
+        private Vector2Int _coords;
 
 
         public AStarNode(int xCoord, int yCoord, int distanceTraversed, int distanceToTarget, AStarNode parent = null)
         {
-            _coords = new Tuple<int, int>(xCoord, yCoord);
+            _coords = new Vector2Int(xCoord, yCoord);
 
             _distanceTraversed = distanceTraversed;
             _distanceToTargetEstimated = distanceToTarget;
@@ -30,8 +30,8 @@ namespace Test.Pathfinding.AStar
             _parent = parent;
         }
 
-        public int X { get { return _coords.Item1 ; } }
-        public int Y { get { return _coords.Item2; } }
+        public int X { get { return _coords.x ; } }
+        public int Y { get { return _coords.y; } }
         
         public AStarNode[] GetCalculatedPathToNode()
         {

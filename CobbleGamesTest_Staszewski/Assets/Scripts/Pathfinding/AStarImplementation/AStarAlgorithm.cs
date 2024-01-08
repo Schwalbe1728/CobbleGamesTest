@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace Test.Pathfinding.AStar
 {
-    public class AStarAlgorithm<T> where T: Tuple<int, int>
+    public class AStarAlgorithm
     {
-        public T[] CalculatePath(T start, T target)
+        public Vector2Int[] CalculatePath(Vector2Int start, Vector2Int target)
         {
             throw new System.NotImplementedException();
 
