@@ -34,7 +34,7 @@ namespace Test.Pathfinding
             int count = 10;                     //  TODO: count = group.Length instead
 
             Vector2Int followPoint = target;    //  NOTE: we might decide that followPoint should be the leader's current cell - hence a temporary container like this
-            Vector2[] direction = new Vector2[count];
+            Vector2[] directions = new Vector2[count];
             float[,] influenceStrengthMatrix = null;   //  = CalculateInfluenceStrengthMatrix
 
             for(int i = 0; i < count; i++)
@@ -44,22 +44,26 @@ namespace Test.Pathfinding
             }
 
             Vector2[] seperationVectors = SeperationCheck(leaderIndex, influenceStrengthMatrix);
-            Vector2[] obstacleAvoidanceVectors;     // = ObstacleAvoidanceCheck...
-            Vector2[] alignmentVectors = AlignmentCheck(leaderIndex, influenceStrengthMatrix, direction);
+            Vector2[] obstacleAvoidanceVectors = ObstacleAvoidanceCheck(leaderIndex, mapAbstraction);
+            Vector2[] alignmentVectors = AlignmentCheck(leaderIndex, influenceStrengthMatrix, directions);
             Vector2[] cohesionVectors = CohesionCheck(leaderIndex, influenceStrengthMatrix);
 
-            for(int i = 0; i < direction.Length; i++)
+            for(int i = 0; i < directions.Length; i++)
             {
-                direction[i] +=
-                    _boidsConfig.AvoidanceStrength * seperationVectors[i] +
-                    //_boidsConfig.AvoidanceStrength * obstacleAvoidanceVectors[i] +
-                    _boidsConfig.AlignmentStrength * alignmentVectors[i] +
-                    _boidsConfig.CohesionStrength * cohesionVectors[i];
+                if (i != leaderIndex)
+                {
+                    directions[i] +=
+                      _boidsConfig.AvoidanceStrength * seperationVectors[i] +
+                      _boidsConfig.AvoidanceStrength * obstacleAvoidanceVectors[i] +
+                      _boidsConfig.AlignmentStrength * alignmentVectors[i] +
+                      _boidsConfig.CohesionStrength * cohesionVectors[i];
+                }
 
-                direction[i] = direction[i].normalized;
+                directions[i] = directions[i].normalized;
             }
 
-            throw new System.NotImplementedException();
+            return
+                directions;
         }
 
         private float[,] CalculateInfluenceStrengthMatrix(Vector2[] positions)
@@ -100,6 +104,16 @@ namespace Test.Pathfinding
 
             return avoidanceVectors;
             */
+
+            throw new System.NotImplementedException();
+        }
+
+        private Vector2[] ObstacleAvoidanceCheck(/*Character[] groupCharacters, */int leaderIndex, MapAbstraction mapAbstraction)
+        {
+            //  for each character that isn't the leader
+            //  attempt to poll for non traversible cells
+            //  results are the weighted sum of (character - obstacle)
+            //  where weights are equal to influence based on distance between the two
 
             throw new System.NotImplementedException();
         }
